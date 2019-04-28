@@ -11,9 +11,41 @@
 " These options and commands enable some very useful features in Vim, that
 " no user should have to live without.
 
+"------------------------------------------------------------
+" Vundle
+"
 " Set 'nocompatible' to ward off unexpected things that your distro might
 " have made, as well as sanely reset options when re-sourcing .vimrc
 set nocompatible
+filetype off
+
+" set the runtime path to include Vundle and initialize
+set rtp+=$HOME/vimfiles/bundle/Vundle.vim
+call vundle#begin('$HOME/vimfiles/bundle/')
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+Plugin 'scrooloose/nerdtree'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'tpope/vim-commentary'
+Plugin 'Valloric/YouCompleteMe'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
 
 " Attempt to determine the type of a file based on its name and possibly its
 " contents. Use this to allow intelligent auto-indenting for each filetype,
@@ -163,6 +195,12 @@ set tabstop=4
 "------------------------------------------------------------
 " plugins {{{1
 "
+" Nerdtree
+"
+" Workaround for some issue in Nerdtree.vim
+let g:NERDTreeGlyphReadOnly = "RO"
+let g:NERDTreeNodeDelimiter = 1
+
 " Airline
 "
 set encoding=utf-8
@@ -182,7 +220,7 @@ let g:airline_theme='badwolf'
 " Default directory
 if has("win32")
     if @% == ""
-        cd D:\
+        cd D:\Bin\Programming
     endif
 endif
 
