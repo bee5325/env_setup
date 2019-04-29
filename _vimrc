@@ -32,7 +32,9 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'tpope/vim-commentary'
-Plugin 'Valloric/YouCompleteMe'
+Plugin 'davidhalter/jedi-vim'
+Plugin 'ervandew/supertab'
+Plugin 'w0rp/ale'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -198,8 +200,8 @@ set tabstop=4
 " Nerdtree
 "
 " Workaround for some issue in Nerdtree.vim
-let g:NERDTreeGlyphReadOnly = "RO"
-let g:NERDTreeNodeDelimiter = 1
+" let g:NERDTreeGlyphReadOnly = "RO"
+" let g:NERDTreeNodeDelimiter = 1
 
 " Airline
 "
@@ -212,7 +214,14 @@ endif
 let g:airline_symbols.maxlinenr = '㏑'
 
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#ale#enabled = 1
 let g:airline_theme='badwolf'
+
+" ALE
+"
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '•'
+let g:ale_python_pylint_options = "--extension-pkg-whitelist=pygame"
 
 "------------------------------------------------------------
 " Misc setup {{{1
@@ -269,7 +278,7 @@ noremap <leader>[ :bp<CR>
 "Colorscheme
 "
 if has("gui_running")
-  colorscheme obsidian2
+  colorscheme obsidian
 else
   " colorscheme monokai
   " set t_Co=256
