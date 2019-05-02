@@ -35,6 +35,7 @@ Plugin 'tpope/vim-commentary'
 Plugin 'davidhalter/jedi-vim'
 Plugin 'ervandew/supertab'
 Plugin 'w0rp/ale'
+Plugin 'ctrlpvim/ctrlp.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -164,8 +165,8 @@ set cmdheight=2
 " Display line numbers on the left
 set number
 
-" Display column line at 101
-set colorcolumn=101
+" Display column line at 80
+set colorcolumn=80
 
 " Quickly time out on keycodes, but never time out on mappings
 set notimeout ttimeout ttimeoutlen=200
@@ -178,6 +179,9 @@ set t_kb=
 
 " visual selection automatically copied to clipboard
 set go+=a
+
+autocmd BufEnter * lcd %:p:h
+
 "------------------------------------------------------------
 " Indentation options {{{1
 "
@@ -199,9 +203,7 @@ set tabstop=4
 "
 " Nerdtree
 "
-" Workaround for some issue in Nerdtree.vim
-" let g:NERDTreeGlyphReadOnly = "RO"
-" let g:NERDTreeNodeDelimiter = 1
+let g:NERDTreeQuitOnOpen = 1
 
 " Airline
 "
@@ -222,6 +224,18 @@ let g:airline_theme='badwolf'
 let g:ale_sign_error = '✘'
 let g:ale_sign_warning = '•'
 let g:ale_python_pylint_options = "--extension-pkg-whitelist=pygame"
+
+" Python support
+"
+" python with virtualenv support
+py3 << EOF
+import os
+import sys
+if 'VIRTUAL_ENV' in os.environ:
+  project_base_dir = os.environ['VIRTUAL_ENV']
+  activate_this = os.path.join(project_base_dir, 'Scripts\\activate_this.py')
+  exec(compile(open(activate_this, "rb").read(), activate_this, 'exec'), dict(__file__=activate_this))
+EOF
 
 "------------------------------------------------------------
 " Misc setup {{{1
@@ -255,6 +269,7 @@ nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
 " nerdtree
+"
 map <C-n> :NERDTreeToggle %:p:h<CR>
 
 " compile and run c++ programs from vim
@@ -266,6 +281,10 @@ noremap <LEFT>    <C-U>
 noremap <RIGHT>   <C-D>
 noremap <UP>      <C-Y>
 noremap <DOWN>    <C-E>
+
+" Easier naviagation in quickfix window
+noremap <leader>w :lnext<CR>
+noremap <leader>q :lprevious<CR>
 
 " search highlighted text
 vnoremap // y/\V<C-R>"<CR>
@@ -292,68 +311,6 @@ if has("gui_running")
   " Maximize gvim window (for an alternative on Windows, see simalt below).
   set lines=50 columns=100
   set guifont=Powerline_Consolas:h11
-endif
-
-"set windows at same position when exit
-let g:screen_size_restore_pos = 1
-let g:screen_size_by_vim_instance = 1
-
-if has("gui_running")
-  function! ScreenFilename()
-    if has('amiga')
-      return "s:.vimsize"
-    elseif has('win32')
-      return $HOME.'\_vimsize'
-    else
-      return $HOME.'/.vimsize'
-    endif
-  endfunction
-
-  function! ScreenRestore()
-    " Restore window size (columns and lines) and position
-    " from values stored in vimsize file.
-    " Must set font first so columns and lines are based on font size.
-    let f = ScreenFilename()
-    if has("gui_running") && g:screen_size_restore_pos && filereadable(f)
-      let vim_instance = (g:screen_size_by_vim_instance==1?(v:servername):'GVIM')
-      for line in readfile(f)
-        let sizepos = split(line)
-        if len(sizepos) == 5 && sizepos[0] == vim_instance
-          silent! execute "set columns=".sizepos[1]." lines=".sizepos[2]
-          silent! execute "winpos ".sizepos[3]." ".sizepos[4]
-          return
-        endif
-      endfor
-    endif
-  endfunction
-
-  function! ScreenSave()
-    " Save window size and position.
-    if has("gui_running") && g:screen_size_restore_pos
-      let vim_instance = (g:screen_size_by_vim_instance==1?(v:servername):'GVIM')
-      let data = vim_instance . ' ' . &columns . ' ' . &lines . ' ' .
-            \ (getwinposx()<0?0:getwinposx()) . ' ' .
-            \ (getwinposy()<0?0:getwinposy())
-      let f = ScreenFilename()
-      if filereadable(f)
-        let lines = readfile(f)
-        call filter(lines, "v:val !~ '^" . vim_instance . "\\>'")
-        call add(lines, data)
-      else
-        let lines = [data]
-      endif
-      call writefile(lines, f)
-    endif
-  endfunction
-
-  if !exists('g:screen_size_restore_pos')
-    let g:screen_size_restore_pos = 1
-  endif
-  if !exists('g:screen_size_by_vim_instance')
-    let g:screen_size_by_vim_instance = 1
-  endif
-  autocmd VimEnter * if g:screen_size_restore_pos == 1 | call ScreenRestore() | endif
-  autocmd VimLeavePre * if g:screen_size_restore_pos == 1 | call ScreenSave() | endif
 endif
 
 "---------------------------------------
