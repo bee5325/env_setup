@@ -20,8 +20,8 @@ set nocompatible
 filetype off
 
 " set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+set rtp+=$HOME/vimfiles/bundle/Vundle.vim
+call vundle#begin('$HOME/vimfiles/bundle/')
 " alternatively, pass a path where Vundle should install plugins
 "call vundle#begin('~/some/path/here')
 
@@ -39,6 +39,7 @@ Plugin 'roxma/vim-hug-neovim-rpc'
 Plugin 'shougo/deoplete.nvim'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'StanAngeloff/php.vim'
+Plugin 'tpope/vim-fugitive'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -116,6 +117,8 @@ set cursorline
 " script, <http://www.vim.org/scripts/script.php?script_id=1876>.
 " set nomodeline
 
+set splitright
+set splitbelow
 
 "------------------------------------------------------------
 " Usability options {{{1
@@ -161,7 +164,7 @@ set visualbell
 set t_vb=
 
 " Enable use of the mouse for all modes
-set mouse=a
+"set mouse=ra
 
 " Set the command window height to 2 lines, to avoid many cases of having to
 " "press <Enter> to continue"
@@ -169,6 +172,9 @@ set cmdheight=2
 
 " Display line numbers on the left
 set number
+
+" Always leave some space when scroll off the sreen
+set scrolloff=5
 
 " Display column line at 80
 set colorcolumn=80
@@ -185,7 +191,8 @@ set t_kb=
 " visual selection automatically copied to clipboard
 set go+=a
 
-autocmd BufEnter * lcd %:p:h
+" Auto cd to current directory when switching buffer
+" autocmd BufEnter * lcd %:p:h
 
 "------------------------------------------------------------
 " Indentation options {{{1
@@ -206,9 +213,6 @@ set tabstop=4
 "------------------------------------------------------------
 " plugins {{{1
 "
-" Vundle
-
-"
 " Nerdtree
 "
 let g:NERDTreeQuitOnOpen = 1
@@ -224,23 +228,41 @@ endif
 let g:airline_symbols.maxlinenr = '㏑'
 
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#ale#enabled = 1
 let g:airline_theme='badwolf'
 
-" deoplete
-"
-let g:deoplete#enable_at_startup = 1
+set noshowmode
+
+if has('python')
+
+    " deoplete
+    "
+    let g:deoplete#enable_at_startup = 1
+
+    " ALE
+    "
+    let g:ale_sign_error = '!'
+    let g:ale_sign_warning = '•'
+    let g:ale_python_pylint_options = "--extension-pkg-whitelist=pygame"
+
+endif
+
+" CtrlP
+" let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
 
 " Python support
 "
-" python with virtualenv support
-py3 << EOF
-import os
-import sys
-if 'VIRTUAL_ENV' in os.environ:
-  project_base_dir = os.environ['VIRTUAL_ENV']
-  activate_this = os.path.join(project_base_dir, 'Scripts\\activate_this.py')
-  exec(compile(open(activate_this, "rb").read(), activate_this, 'exec'), dict(__file__=activate_this))
-EOF
+let $PYTHONPATH = "D:\\Tool\\Common\\Python\\v3.4.4\\Lib;D:\\Tool\\Common\\Python\\v3.4.4\\DLLs;D:\\Tool\\Common\\Python\\v3.4.4\\Lib\\lib-tk"
+let $PYLINTRC = "$HOME\\vimfiles\\linter\\pylint"
+" " python with virtualenv support
+" py3 << EOF
+" import os
+" import sys
+" if 'VIRTUAL_ENV' in os.environ:
+"   project_base_dir = os.environ['VIRTUAL_ENV']
+"   activate_this = os.path.join(project_base_dir, 'Scripts\\activate_this.py')
+"   exec(compile(open(activate_this, "rb").read(), activate_this, 'exec'), dict(__file__=activate_this))
+" EOF
 
 "------------------------------------------------------------
 " Misc setup {{{1
@@ -263,6 +285,12 @@ map Y y$
 map <leader>y "*y
 map <leader>p "*p
 
+" Map O to just insert a new line and return to normal mode
+nmap O O<ESC>
+
+" Jump forwards and backwards
+nnoremap <C-\> <C-o>
+
 " Map <C-L> (redraw screen) to also turn off search highlighting until the
 " next search
 nnoremap <C-o> :nohl<CR><C-L>
@@ -272,6 +300,7 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
+nnoremap <C-E> :bp\|bd #<CR>
 
 " nerdtree
 "
@@ -294,18 +323,37 @@ noremap <leader>q :lprevious<CR>
 " search highlighted text
 vnoremap // y/\V<C-R>"<CR>
 
+" grep for current text in directory
+let g:gdir = getcwd()
+nnoremap <leader>g :silent execute "grep! -R " . shellescape(expand("<cword>")) . " " . g:gdir<cr>:redraw!<cr>:copen<cr>
+vnoremap <leader>g y:silent execute "grep! -R " . @" . " " . g:gdir<cr>:redraw!<cr>:copen<cr>
+
 " change buffer
 noremap <leader>] :bn<CR>
 noremap <leader>[ :bp<CR>
-nnoremap <C-w> :bp\|bd #<CR>
 
 "------------------------------------------------------------
 "Colorscheme
 "
-set t_Co=256
-set termguicolors
-colorscheme obsidian
+if has("gui_running")
+  colorscheme obsidian
+else
+  set t_Co=256
+  set term=xterm-256color
+  set t_ut=
+  let g:seoul256_background = 234
+  colorscheme seoul256
+endif
 
+
+"------------------------------------------------------------:
+"window size
+if has("gui_running")
+  " GUI is running or is about to start.
+  " Maximize gvim window (for an alternative on Windows, see simalt below).
+  set lines=50 columns=100
+  set guifont=Powerline_Consolas:h11
+endif
 
 "---------------------------------------
 " Macros
