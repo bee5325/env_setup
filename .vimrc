@@ -28,18 +28,22 @@ call vundle#begin('$HOME/vimfiles/bundle/')
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
+" Plugin 'jiangmao/auto-pairs'
 Plugin 'scrooloose/nerdtree'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'tpope/vim-commentary'
-Plugin 'davidhalter/jedi-vim'
 Plugin 'ervandew/supertab'
-Plugin 'roxma/nvim-yarp'
-Plugin 'roxma/vim-hug-neovim-rpc'
-Plugin 'shougo/deoplete.nvim'
 Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'StanAngeloff/php.vim'
-Plugin 'tpope/vim-fugitive'
+Plugin 'FelikZ/ctrlp-py-matcher'
+Plugin 'shougo/deoplete.nvim'
+Plugin 'pangloss/vim-javascript'
+Plugin 'cakebaker/scss-syntax.vim'
+Plugin 'othree/html5.vim'
+Plugin 'posva/vim-vue'
+if has('python')
+    Plugin 'davidhalter/jedi-vim'
+endif
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -287,6 +291,9 @@ map <leader>p "*p
 
 " Map O to just insert a new line and return to normal mode
 nmap O O<ESC>
+
+" Don't jump when search for current word
+nnoremap * :keepjumps normal! mi*`i<cr>
 
 " Jump forwards and backwards
 nnoremap <C-\> <C-o>
