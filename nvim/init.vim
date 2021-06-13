@@ -14,7 +14,6 @@ call plug#begin('~/.vim/plugged')
   Plug 'hrsh7th/vim-vsnip'
   Plug 'hrsh7th/vim-vsnip-integ'
   Plug 'hrsh7th/nvim-compe'
-  " Plug 'puremourning/vimspector'
   Plug 'nvim-lua/popup.nvim'
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
@@ -22,6 +21,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'lewis6991/gitsigns.nvim'
   Plug 'tpope/vim-surround'
   Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
+  " Plug 'puremourning/vimspector'
 "   Plug 'janko/vim-test'
   Plug 'vimwiki/vimwiki'
   Plug 'mhinz/vim-startify'
@@ -250,6 +250,7 @@ endif
 
 let g:startify_padding_left = 10
 let g:startify_custom_header = map(startify#pad(g:startify_ascii) , '"     ".v:val')
+let g:startify_change_to_dir = 0
 
 " 
 " " janko/vim-test
@@ -439,3 +440,7 @@ vnoremap // y/\V<C-R>"<CR>
 noremap <leader>] :bn<CR>
 noremap <leader>[ :bp<CR>
 nnoremap <C-e> :bp\|bd #<CR>
+
+" add new line
+nnoremap O O<Esc>
+
