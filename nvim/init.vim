@@ -15,11 +15,12 @@ call plug#begin('~/.vim/plugged')
   Plug 'hrsh7th/vim-vsnip-integ'
   Plug 'hrsh7th/nvim-compe'
   Plug 'nvim-lua/popup.nvim'
-  Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'lewis6991/gitsigns.nvim'
   Plug 'tpope/vim-surround'
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'folke/todo-comments.nvim'
   Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
   " Plug 'puremourning/vimspector'
 "   Plug 'janko/vim-test'
@@ -251,6 +252,15 @@ endif
 let g:startify_padding_left = 10
 let g:startify_custom_header = map(startify#pad(g:startify_ascii) , '"     ".v:val')
 let g:startify_change_to_dir = 0
+
+" folke/todo-comments.nvim
+lua << EOF
+  require("todo-comments").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+EOF
 
 " 
 " " janko/vim-test
